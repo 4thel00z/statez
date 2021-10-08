@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "statez"
-version = "0.1.1"
+version = "0.1.2"
 description = "Helps you to build fancy statemachines"
 authors = ["4thel00z <4thel00z@gmail.com>"]
 license = "GPL-3"
 readme = "README.md"
+homepage = "https://github.com/4thel00z/statez"
 
 [tool.poetry.dependencies]
 python = "^3.9"
