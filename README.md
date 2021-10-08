@@ -59,18 +59,29 @@ async def return_bool(ignore):
     return True
 
 
+async def say_stuff(ignore):
+    print("stuff")
+    return True
+
+
 if __name__ == "__main__":
     s = AsyncStateMachine("HungryBoi", state="hungry")
     transition = (
         Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | Do(return_bool)
     )
+    # This is how you can keep the state as before
+    transition2 = Trigger("SayStuff") | From(...) | To(...) | say_stuff
+
     # It doesn't matter if you use the function directly or if you wrap it in Do :-)
     assert (
         transition
         == Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | return_bool
     )
     s += transition
+    s += transition2
     asyncio.run(s.consume(Event("Eat")))
+    assert s.state == "not_hungry", s.state
+    asyncio.run(s.consume(Event("SayStuff")))
     assert s.state == "not_hungry", s.state
 ```
 

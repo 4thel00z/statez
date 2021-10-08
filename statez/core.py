@@ -170,18 +170,20 @@ class StateMachine:
         is_consumed = False
 
         for transition in self.transitions:
-            matched_before = any(
+            matched_before = transition.before == ... or any(
                 (
                     self.state == transition.before,
                     self.state in transition.before,
-                    transition.before is ...,
                 )
             )
             matched_after = transition.event == event.name
 
             if matched_before and matched_after:
                 is_consumed = transition.action(event)
-                self.state = transition.after
+                # transition.after == ... leaves self.state invariant
+                if transition.after != ...:
+                    self.state = transition.after
+
                 if is_consumed:
                     break
                 # if not is_consumed it is pass through event (just to change action
@@ -195,18 +197,19 @@ class AsyncStateMachine(StateMachine):
         is_consumed = False
 
         for transition in self.transitions:
-            matched_before = any(
+            matched_before = transition.before == ... or any(
                 (
                     self.state == transition.before,
                     self.state in transition.before,
-                    transition.before is ...,
                 )
             )
             matched_after = transition.event == event.name
 
             if matched_before and matched_after:
                 is_consumed = await transition.action(event)
-                self.state = transition.after
+                # transition.after == ... leaves self.state invariant
+                if transition.after != ...:
+                    self.state = transition.after
                 if is_consumed:
                     break
                 # if not is_consumed it is pass through event (just to change action
