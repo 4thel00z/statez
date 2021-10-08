@@ -20,22 +20,25 @@ poetry add statez
 ## Usage
 
 ```python
-from statez import (
+from statez.core import (
     Trigger,
     From,
     To,
-    Do, StateMachine
+    Do,
+    StateMachine,
+    Event
 )
 
 if __name__ == '__main__':
-    s = StateMachine("Flow1")
-    transition = Trigger("on") | From(["from", "from2"]) | To("to") | Do(lambda: None)
+    s = StateMachine("HungryBoi", state="hungry")
+    transition = Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | Do(lambda a: True)
     # It doesn't matter if you use the function directly or if you wrap it in Do :-)
-    assert transition == Trigger("on") | From(["from", "from2"]) | To("to") | (lambda: None)
+    assert transition == Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | (lambda a: True)
     s += transition
-    s += transition
-    s += transition
+    s.consume(Event("Eat"))
+    assert s.state == "not_hungry", s.state
 ```
+
 ## License
 
 This project is licensed under the GPL-3 license.
