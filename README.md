@@ -1,5 +1,7 @@
 # statez
 
+![statez.png](https://raw.githubusercontent.com/4thel00z/logos/master/statez.png)
+
 ## Motivation
 
 All the statemachine packages for python look weird and do too much stuff.
