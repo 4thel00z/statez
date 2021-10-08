@@ -1,18 +1,8 @@
 import enum
 from dataclasses import dataclass, field
-from typing import (
-    Callable,
-    Tuple,
-    Any,
-    Dict,
-    List,
-    Union,
-    Iterable
-)
+from typing import Callable, Tuple, Any, Dict, List, Union, Iterable
 
-from statez.utils import (
-    flatten
-)
+from statez.utils import flatten
 
 
 class State(enum.Enum):
@@ -60,7 +50,12 @@ class From:
 
 
 class To:
-    def __init__(self, after: str, before: StateType = "", event: str = "", ):
+    def __init__(
+        self,
+        after: str,
+        before: StateType = "",
+        event: str = "",
+    ):
         self.after = after
         self.before = before
         self.event = event
@@ -73,7 +68,7 @@ class To:
             event=self.event,
             before=self.before,
             after=self.after,
-            action=getattr(other, "f", other)
+            action=getattr(other, "f", other),
         )
 
 
@@ -94,15 +89,7 @@ def fan_out(edge, key):
     fan = getattr(edge, key)
     if isinstance(fan, (List, Tuple)):
         # override the key with the corresponding fan value
-        return [
-            Edge(
-                **{
-                    **vars(edge),
-                    key: val
-                }
-            )
-            for val in fan
-        ]
+        return [Edge(**{**vars(edge), key: val}) for val in fan]
     return [edge]
 
 
@@ -111,13 +98,15 @@ class Edge:
     event: str
     before: StateType
     after: StateType
-    action: Callable[[Event], bool] = field(default_factory= lambda: lambda _: True)
+    action: Callable[[Event], bool] = field(default_factory=lambda: lambda _: True)
 
     def __eq__(self, other):
-        return self.event == other.event and \
-               self.before == other.before and \
-               self.after == self.after and \
-               self.action == self.action
+        return (
+            self.event == other.event
+            and self.before == other.before
+            and self.after == self.after
+            and self.action == self.action
+        )
 
     def __or__(self, other):
         if isinstance(other, Trigger):
@@ -125,7 +114,7 @@ class Edge:
                 event=getattr(other, "event", other),
                 before=self.before,
                 after=self.after,
-                action=self.action
+                action=self.action,
             )
         if isinstance(other, From):
             return Edge(
@@ -146,7 +135,7 @@ class Edge:
                 event=self.event,
                 before=self.before,
                 after=self.after,
-                action=getattr(other, "f", other)
+                action=getattr(other, "f", other),
             )
 
         raise TypeError("can only | with On, Do, Callable, Before and After")
@@ -181,15 +170,42 @@ class StateMachine:
         is_consumed = False
 
         for transition in self.transitions:
-            matched_before = any((
-                self.state == transition.before,
-                self.state in transition.before,
-                transition.before is ...
-            ))
+            matched_before = any(
+                (
+                    self.state == transition.before,
+                    self.state in transition.before,
+                    transition.before is ...,
+                )
+            )
             matched_after = transition.event == event.name
 
             if matched_before and matched_after:
                 is_consumed = transition.action(event)
+                self.state = transition.after
+                if is_consumed:
+                    break
+                # if not is_consumed it is pass through event (just to change action
+
+        return is_consumed
+
+
+@dataclass
+class AsyncStateMachine(StateMachine):
+    async def consume(self, event: Event) -> bool:
+        is_consumed = False
+
+        for transition in self.transitions:
+            matched_before = any(
+                (
+                    self.state == transition.before,
+                    self.state in transition.before,
+                    transition.before is ...,
+                )
+            )
+            matched_after = transition.event == event.name
+
+            if matched_before and matched_after:
+                is_consumed = await transition.action(event)
                 self.state = transition.after
                 if is_consumed:
                     break

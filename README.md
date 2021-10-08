@@ -19,8 +19,10 @@ poetry add statez
 
 ## Usage
 
+### Synchronous example
+
 ```python
-from statez.core import (
+from statez import (
     Trigger,
     From,
     To,
@@ -36,6 +38,39 @@ if __name__ == '__main__':
     assert transition == Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | (lambda a: True)
     s += transition
     s.consume(Event("Eat"))
+    assert s.state == "not_hungry", s.state
+```
+
+### Asynchronous example (Caution, this is dumb use of asyncio)
+
+``` python
+from statez import (
+    Trigger,
+    From,
+    To,
+    Do,
+    AsyncStateMachine,
+    Event,
+)
+import asyncio
+
+
+async def return_bool(ignore):
+    return True
+
+
+if __name__ == "__main__":
+    s = AsyncStateMachine("HungryBoi", state="hungry")
+    transition = (
+        Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | Do(return_bool)
+    )
+    # It doesn't matter if you use the function directly or if you wrap it in Do :-)
+    assert (
+        transition
+        == Trigger("Eat") | From(["hungry", "dunno"]) | To("not_hungry") | return_bool
+    )
+    s += transition
+    asyncio.run(s.consume(Event("Eat")))
     assert s.state == "not_hungry", s.state
 ```
 
