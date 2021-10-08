@@ -5,7 +5,7 @@
 ## Motivation
 
 All the statemachine packages for python look weird and do too much stuff.
-This one is simple (and synchronous).
+This one is simple (and can even support asynchronous transitions).
 
 
 ## Installation
