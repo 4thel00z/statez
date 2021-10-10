@@ -104,8 +104,8 @@ class Edge:
         return (
             self.event == other.event
             and self.before == other.before
-            and self.after == self.after
-            and self.action == self.action
+            and self.after == other.after
+            and self.action == other.action
         )
 
     def __or__(self, other):
