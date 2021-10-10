@@ -1,7 +1,7 @@
 # statez
 
-![statez.png](https://raw.githubusercontent.com/4thel00z/logos/master/statez.png)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/4thel00z/statez.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/4thel00z/statez/alerts/)
+![statez.png](https://raw.githubusercontent.com/4thel00z/logos/master/statez.png)
 
 ## Motivation
 
