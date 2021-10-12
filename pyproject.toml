@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "statez"
-version = "0.3.2"
+version = "0.3.4"
 description = "Helps you to build fancy statemachines"
 authors = ["4thel00z <4thel00z@gmail.com>"]
 license = "GPL-3"

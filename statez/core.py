@@ -226,4 +226,5 @@ __all__ = [
     "From",
     "To",
     "State",
+    "Event",
 ]
